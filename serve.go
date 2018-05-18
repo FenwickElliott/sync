@@ -16,12 +16,12 @@ var (
 
 // Service struct containing all service specific data
 type Service struct {
-	Name        string
-	Port        string
-	Address     string
-	MongoServer string
-	Redirect    string
-	TLS         bool
+	Name        string `bson:"_id,omitempty"`
+	Address     string `bson:"host"`
+	Port        string `bson:"port"`
+	Redirect    string `bson:"redirect"`
+	MongoServer string `bson:"mongoserver"`
+	TLS         bool   `bson:"tls"`
 }
 
 // Serve starts the service according to the given Service struct
