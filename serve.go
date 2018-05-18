@@ -42,7 +42,7 @@ func Serve(serviceVars Service) error {
 	http.HandleFunc("/forward", forward)
 	http.HandleFunc("/back", back)
 	if service.TLS {
-		fmt.Println("Serving:", service.Name, "on port:", "service.Port")
+		fmt.Println("Serving:", service.Name, "on port:", service.Port)
 		return http.ListenAndServeTLS(":"+service.Port, "server.crt", "server.key", nil)
 	}
 	fmt.Println("Serving:", service.Name, "on port:", service.Port)
