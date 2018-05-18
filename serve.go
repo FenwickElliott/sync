@@ -15,8 +15,8 @@ var (
 )
 
 type Service struct {
-	Name string
-	// Port        string
+	Name        string
+	Port        string
 	Address     string
 	MongoServer string
 	Redirect    string
@@ -42,12 +42,9 @@ func Serve(serviceVars Service) error {
 	http.HandleFunc("/forward", forward)
 	http.HandleFunc("/back", back)
 	if service.TLS {
-		fmt.Println("Serving:", service.Name, "on port: 443")
-		return http.ListenAndServeTLS(":443", "server.crt", "server.key", nil)
+		fmt.Println("Serving:", service.Name, "on port:", "service.Port")
+		return http.ListenAndServeTLS(":"+service.Port, "server.crt", "server.key", nil)
 	}
-	fmt.Println("Serving:", service.Name, "on port: 80")
-	return http.ListenAndServe(":80", nil)
-	// fmt.Println("Serving:", service.Name, "on port:", service.Port)
-	// return http.ListenAndServe(":"+service.Port, nil)
-
+	fmt.Println("Serving:", service.Name, "on port:", service.Port)
+	return http.ListenAndServe(":"+service.Port, nil)
 }
