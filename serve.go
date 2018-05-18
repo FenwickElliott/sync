@@ -14,16 +14,17 @@ var (
 	service Service
 )
 
+// Service struct containing all service specific data
 type Service struct {
 	Name        string
 	Port        string
 	Address     string
 	MongoServer string
 	Redirect    string
-	Partners    []string
 	TLS         bool
 }
 
+// Serve starts the service according to the given Service struct
 func Serve(serviceVars Service) error {
 	service = serviceVars
 	if service.Name == "" {
