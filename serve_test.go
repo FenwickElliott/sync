@@ -20,7 +20,6 @@ func init() {
 }
 
 func TestIn(t *testing.T) {
-
 	var inTests = []struct {
 		input      string
 		statusCode int

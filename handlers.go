@@ -8,6 +8,15 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+func root(w http.ResponseWriter, r *http.Request) {
+	var all []bson.M
+	err = c.Find(nil).All(&all)
+	check(err)
+
+	err := json.NewEncoder(w).Encode(all)
+	check(err)
+}
+
 func in(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	partner := r.FormValue("partner")
