@@ -32,6 +32,25 @@ func insert(nativeID, partner, partnerCookie string) error {
 	return err
 }
 
+func getOrSetCookie(w *http.ResponseWriter, r *http.Request) *http.Cookie {
+	nativeCookie, err := r.Cookie(service.Name + "ID")
+	if nativeCookie == nil {
+		r.ParseForm()
+		partner := r.FormValue("partner")
+		partnerCookie := r.FormValue("cookie")
+		var res bson.M
+		err = c.Find(bson.M{partner: partnerCookie}).One(&res)
+		if err == nil {
+			nativeCookie = setCookie(w, r, res["_id"].(string))
+		} else {
+			nativeCookie = setCookie(w, r, "new")
+		}
+	} else {
+		check(err)
+	}
+	return nativeCookie
+}
+
 func setCookie(w *http.ResponseWriter, r *http.Request, cookieVal string) *http.Cookie {
 	if cookieVal == "new" {
 		h := sha1.New()

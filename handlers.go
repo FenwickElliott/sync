@@ -9,6 +9,7 @@ import (
 )
 
 func root(w http.ResponseWriter, r *http.Request) {
+	// TODO: redirects (also functionalize them)
 	var all []bson.M
 	err = c.Find(nil).All(&all)
 	check(err)
@@ -21,19 +22,7 @@ func in(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	partner := r.FormValue("partner")
 	partnerCookie := r.FormValue("cookie")
-
-	nativeCookie, err := r.Cookie(service.Name + "ID")
-	if nativeCookie == nil {
-		var res bson.M
-		err = c.Find(bson.M{partner: partnerCookie}).One(&res)
-		if err == nil {
-			nativeCookie = setCookie(&w, r, res["_id"].(string))
-		} else {
-			nativeCookie = setCookie(&w, r, "new")
-		}
-	} else {
-		check(err)
-	}
+	nativeCookie := getOrSetCookie(&w, r)
 
 	err = insert(nativeCookie.Value, partner, partnerCookie)
 	check(err)
@@ -63,7 +52,6 @@ func out(w http.ResponseWriter, r *http.Request) {
 	var res bson.M
 	err = c.Find(bson.M{partner: partnerCookie}).One(&res)
 	if err != nil && err.Error() == "not found" {
-		// io.WriteString(w, "Cookie not found\n")
 		http.Error(w, "Cookie not found", 404)
 		return
 	}
@@ -74,13 +62,7 @@ func out(w http.ResponseWriter, r *http.Request) {
 }
 
 func forward(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
-	nativeCookie, err := r.Cookie(service.Name + "ID")
-	if nativeCookie == nil {
-		nativeCookie = setCookie(&w, r, "new")
-	} else {
-		check(err)
-	}
+	nativeCookie := getOrSetCookie(&w, r)
 
 	for k, v := range r.Form {
 		err = insert(nativeCookie.Value, k, v[0])
@@ -96,12 +78,7 @@ func back(w http.ResponseWriter, r *http.Request) {
 	partner := r.FormValue("partner")
 	partnerCookie := r.FormValue("cookie")
 
-	nativeCookie, err := r.Cookie(service.Name + "ID")
-	if nativeCookie == nil {
-		nativeCookie = setCookie(&w, r, "new")
-	} else {
-		check(err)
-	}
+	nativeCookie := getOrSetCookie(&w, r)
 	err = insert(nativeCookie.Value, partner, partnerCookie)
 	check(err)
 }
