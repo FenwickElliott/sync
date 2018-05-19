@@ -8,7 +8,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-func root(w http.ResponseWriter, r *http.Request) {
+func print(w http.ResponseWriter, r *http.Request) {
 	// TODO: redirects (also functionalize them)
 	var all []bson.M
 	err = c.Find(nil).All(&all)
