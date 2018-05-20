@@ -14,16 +14,6 @@ var (
 	service Service
 )
 
-// Service struct containing all service specific data
-type Service struct {
-	Name        string `bson:"_id,omitempty"`
-	Address     string `bson:"host"`
-	Port        string `bson:"port"`
-	Redirect    string `bson:"redirect"`
-	MongoServer string `bson:"mongoserver"`
-	TLS         bool   `bson:"tls"`
-}
-
 // Serve starts the service according to the given Service struct
 func Serve(serviceVars Service) error {
 	service = serviceVars
@@ -38,7 +28,7 @@ func Serve(serviceVars Service) error {
 	defer session.Close()
 	c = session.DB(service.Name).C("master")
 
-	http.HandleFunc("/print", print)
+	http.HandleFunc("/print", service.print)
 	http.HandleFunc("/in", in)
 	http.HandleFunc("/out", out)
 	http.HandleFunc("/forward", forward)
