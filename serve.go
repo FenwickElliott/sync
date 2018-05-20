@@ -28,7 +28,7 @@ func Serve(serviceVars Service) error {
 	defer session.Close()
 	c = session.DB(service.Name).C("master")
 
-	http.HandleFunc("/print", service.print)
+	http.HandleFunc("/print", print)
 	http.HandleFunc("/in", in)
 	http.HandleFunc("/out", out)
 	http.HandleFunc("/forward", forward)
